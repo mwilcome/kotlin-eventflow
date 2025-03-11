@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
  * This example illustrates the use of an in memory adapter.
  */
 fun main() = runBlocking {
-    // Create an in-memory adapter for testing
+    // Create an in-memory adapter for testing - Use real queues like Kafka or Rabbit in production.
     val adapter = InMemoryAdapter()
 
     // Define the pipeline using the DSL
@@ -22,18 +22,18 @@ fun main() = runBlocking {
         produceTo("output-topic")
     }
 
+    // Start the pipeline
+    launch {
+        println("Starting pipeline...")
+        pipeline.start()
+    }
+
     // Simulate sending messages to the input topic
     launch {
         println("Sending message to input-topic: Message(id=1, content=This is an important message)")
         adapter.sendMessage("input-topic", Message("1", "This is an important message"))
         println("Sending message to input-topic: Message(id=2, content=This is not important)")
         adapter.sendMessage("input-topic", Message("2", "This is not important"))
-    }
-
-    // Start the pipeline
-    launch {
-        println("Starting pipeline...")
-        pipeline.start()
     }
 
     // Wait to allow processing
