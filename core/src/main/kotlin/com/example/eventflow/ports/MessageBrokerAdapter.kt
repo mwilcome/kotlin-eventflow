@@ -5,20 +5,26 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Interface defining the contract for message broker adapters.
- * Adapters implementing this interface handle the actual sending and receiving of messages.
+ * Implementations handle sending, receiving, and closing message channels.
  */
 interface MessageBrokerAdapter {
     /**
+     * Receives messages from the specified topic as a Flow.
+     * @param topic The topic to subscribe to.
+     * @return A Flow emitting messages from the topic.
+     */
+    fun receiveMessages(topic: String): Flow<Message>
+
+    /**
      * Sends a message to the specified topic.
-     * @param topic The topic to send the message to.
+     * @param topic The destination topic.
      * @param message The message to send.
      */
     suspend fun sendMessage(topic: String, message: Message)
 
     /**
-     * Receives messages from the specified topic as a Flow.
-     * @param topic The topic to receive messages from.
-     * @return A Flow of messages from the topic.
+     * Closes the channel for the specified topic, indicating no further messages will be sent.
+     * @param topic The topic whose channel should be closed.
      */
-    fun receiveMessages(topic: String): Flow<Message>
+    suspend fun closeChannel(topic: String)
 }

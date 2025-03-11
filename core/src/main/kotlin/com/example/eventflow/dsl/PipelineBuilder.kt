@@ -1,17 +1,14 @@
 package com.example.eventflow.dsl
 
 import com.example.eventflow.model.Message
-import com.example.eventflow.ports.MessageBrokerAdapter
 import com.example.eventflow.pipeline.Pipeline
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
+import com.example.eventflow.ports.MessageBrokerAdapter
 
 /**
- * DSL function to create a message pipeline.
+ * DSL function to create and configure a message pipeline.
  * @param adapter The message broker adapter to use.
- * @param block The DSL block to configure the pipeline.
- * @return A configured Pipeline instance.
+ * @param block The DSL configuration block.
+ * @return A fully configured Pipeline instance.
  */
 fun messagePipeline(adapter: MessageBrokerAdapter, block: PipelineBuilder.() -> Unit): Pipeline {
     val builder = PipelineBuilder(adapter)
@@ -20,51 +17,63 @@ fun messagePipeline(adapter: MessageBrokerAdapter, block: PipelineBuilder.() -> 
 }
 
 /**
- * Builder class for creating a Pipeline using a DSL.
+ * Builder class for constructing a Pipeline using a DSL.
+ * Allows configuration of input/output topics, filters, transformations, and error handling.
  */
 class PipelineBuilder(private val adapter: MessageBrokerAdapter) {
     private var inputTopic: String? = null
-    private val operations = mutableListOf<(Flow<Message>) -> Flow<Message>>()
+    private val filters = mutableListOf<(Message) -> Boolean>()
+    private val transforms = mutableListOf<(Message) -> Message>()
     private var outputTopic: String? = null
+    private var errorHandler: ((Throwable, Message) -> Unit)? = null
 
     /**
-     * Sets the input topic to consume messages from.
-     * @param topic The input topic.
+     * Specifies the input topic to consume messages from.
+     * @param topic The input topic name.
      */
     fun consumeFrom(topic: String) {
         inputTopic = topic
     }
 
     /**
-     * Adds a filter operation to the pipeline.
-     * @param predicate The condition to filter messages.
+     * Adds a filter to the pipeline to include only messages meeting the condition.
+     * @param predicate The filtering condition.
      */
     fun filter(predicate: (Message) -> Boolean) {
-        operations.add { flow -> flow.filter(predicate) }
+        filters.add(predicate)
     }
 
     /**
-     * Adds a map operation to the pipeline.
-     * @param transform The transformation to apply to each message.
+     * Adds a transformation to the pipeline to modify messages.
+     * @param transform The transformation function.
      */
     fun map(transform: (Message) -> Message) {
-        operations.add { flow -> flow.map(transform) }
+        transforms.add(transform)
     }
 
     /**
-     * Sets the output topic to produce messages to.
-     * @param topic The output topic.
+     * Specifies the output topic to send processed messages to.
+     * @param topic The output topic name.
      */
     fun produceTo(topic: String) {
         outputTopic = topic
     }
 
     /**
-     * Builds and returns the configured Pipeline.
-     * @return A Pipeline instance.
+     * Sets an error handler for exceptions during message processing.
+     * @param handler The error handling function, receiving the exception and original message.
+     */
+    fun onError(handler: (Throwable, Message) -> Unit) {
+        errorHandler = handler
+    }
+
+    /**
+     * Constructs the Pipeline with the configured settings.
+     * @return A configured Pipeline instance.
+     * @throws IllegalStateException if the input topic is not specified.
      */
     fun build(): Pipeline {
         requireNotNull(inputTopic) { "Input topic must be specified" }
-        return Pipeline(adapter, inputTopic!!, operations, outputTopic)
+        return Pipeline(adapter, inputTopic!!, filters, transforms, outputTopic, errorHandler)
     }
 }
