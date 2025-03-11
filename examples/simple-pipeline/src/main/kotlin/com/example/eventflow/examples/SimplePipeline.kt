@@ -8,8 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
- * Example usage of the EventFlow library with an in-memory adapter.
- * Demonstrates how to set up and run a simple message pipeline.
+ * This example illustrates the use of an in memory adapter.
  */
 fun main() = runBlocking {
     // Create an in-memory adapter for testing
@@ -23,16 +22,21 @@ fun main() = runBlocking {
         produceTo("output-topic")
     }
 
-    // Simulate sending a message to the input topic
+    // Simulate sending messages to the input topic
     launch {
+        println("Sending message to input-topic: Message(id=1, content=This is an important message)")
         adapter.sendMessage("input-topic", Message("1", "This is an important message"))
+        println("Sending message to input-topic: Message(id=2, content=This is not important)")
+        adapter.sendMessage("input-topic", Message("2", "This is not important"))
     }
 
     // Start the pipeline
     launch {
+        println("Starting pipeline...")
         pipeline.start()
     }
 
-    // Wait a bit to allow the pipeline to process
+    // Wait to allow processing
     delay(1000)
+    println("Pipeline processing complete.")
 }

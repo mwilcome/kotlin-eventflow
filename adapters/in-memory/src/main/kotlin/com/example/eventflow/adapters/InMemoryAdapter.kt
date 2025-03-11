@@ -22,4 +22,8 @@ class InMemoryAdapter : MessageBrokerAdapter {
         val channel = channels.getOrPut(topic) { Channel() }
         return channel.receiveAsFlow()
     }
+
+    fun closeChannel(topic: String) {
+        channels[topic]?.close()
+    }
 }

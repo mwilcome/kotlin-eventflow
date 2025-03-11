@@ -30,4 +30,11 @@ class Pipeline(
             flow.collect() // Consume the flow without sending
         }
     }
+
+    /**
+     * Allows retrieval of operational flows for inspecting.
+     */
+    fun getOperations(): List<(Flow<Message>) -> Flow<Message>> {
+        return this.operations
+    }
 }
