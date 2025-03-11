@@ -1,16 +1,12 @@
 package com.example.eventflow.model
 
 /**
- * Represents a message with an ID and content.
- * This is the basic unit of data processed by the pipeline.
+ * Represents a message processed by the pipeline.
+ *
+ * @property id Unique identifier for the message.
+ * @property content The content of the message, used for filtering and transformation.
  */
 data class Message(
-    /**
-     * The unique identifier of the message.
-     */
     val id: String,
-    /**
-     * The content of the message.
-     */
     val content: String
 )

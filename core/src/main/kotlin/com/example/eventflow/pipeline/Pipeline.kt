@@ -2,7 +2,6 @@ package com.example.eventflow.pipeline
 
 import com.example.eventflow.model.Message
 import com.example.eventflow.ports.MessageBrokerAdapter
-import kotlinx.coroutines.flow.collect
 
 /**
  * Represents a message processing pipeline.
@@ -41,4 +40,11 @@ class Pipeline(
             }
         }
     }
+
+    // Getters for testing
+    fun getInputTopic(): String = inputTopic
+    fun getFilters(): List<(Message) -> Boolean> = filters
+    fun getTransforms(): List<(Message) -> Message> = transforms
+    fun getOutputTopic(): String? = outputTopic
+    fun getErrorHandler(): ((Throwable, Message) -> Unit)? = errorHandler
 }
