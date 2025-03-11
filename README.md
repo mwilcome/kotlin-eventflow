@@ -1,6 +1,3 @@
----
-
-```markdown
 # Message Processing Pipeline Library
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge&logo=mit)](https://opensource.org/licenses/MIT)
