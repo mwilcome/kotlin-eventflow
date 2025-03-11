@@ -48,9 +48,9 @@ Whether you're prototyping a small project or scaling a distributed system, this
 
 ### Prerequisites
 
-- **Kotlin**: Version 1.9 or higher
+- **Kotlin**: Version 2.0 or higher
 - **Gradle**: Recommended build tool (or use your preferred alternative)
-- **Java**: JDK 11+ (required for Kotlin compatibility)
+- **Java**: JDK 17+ (required for Kotlin compatibility)
 - **Git**: For cloning the repository
 
 ### Installation
