@@ -168,7 +168,7 @@ Contributions are welcome! To get involved:
 2. Create a feature branch (`git checkout -b feature/awesome-improvement`).
 3. Commit your changes (`git commit -m "Add awesome improvement"`).
 4. Push to your branch (`git push origin feature/awesome-improvement`).
-5. Open a pull request.
+5. Open a pull request to dev.
 
 Please include tests for new features and follow Kotlin coding conventions. Report issues or suggest enhancements via the [GitHub Issues](https://github.com/mwilcome/message-pipeline/issues) page.
 
